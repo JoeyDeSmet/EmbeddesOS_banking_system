@@ -43,6 +43,7 @@ namespace Banking {
       rtos::Mail<BancontactToBankMessage, 5> m_messages;
 
     private:
+      // map with name of account and amount of money
       std::unordered_map<std::string, int> m_accounts;
 
   };

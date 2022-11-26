@@ -26,25 +26,25 @@ namespace Banking {
       // Create a response struct
       auto response = message->mail->try_calloc_for(rtos::Kernel::wait_for_u32_forever);
 
-      auto itr = c_this->m_accounts.find(message->name); // Check if account exists
-      if (itr != c_this->m_accounts.end()) {
+      auto account = c_this->m_accounts.find(message->name); // Check if account exists
+      if (account != c_this->m_accounts.end()) {
         // Acount exist
+            
+        if (account->second > message->amount) { // Check if enough money
+          account->second -= message->amount;
 
-        if (itr->second > message->amount) { // Check if enough money
-          itr->second -= message->amount;
           // TODO: Store somwhere and check bank
           response->ok = true;
         } else {
           response->ok = false;
         }
 
-        message->mail->put(response);
       } else {
         // Acount does not exist
         response->ok = false;
-        message->mail->put(response);
       }
 
+      message->mail->put(response);
       c_this->m_messages.free(message);
     }
   }

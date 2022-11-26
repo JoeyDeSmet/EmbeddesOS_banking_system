@@ -2,7 +2,7 @@
 
 namespace Banking {
 
-  Bancontact::Bancontact(std::unordered_map<std::string, Bank*> banks) : m_banks(banks), m_max_connections(2) {
+  Bancontact::Bancontact(std::unordered_map<std::string, Bank*> banks) : m_banksList(banks), m_max_connections(2) {
     // Start thread and give new instance as argument
     m_thread.start(callback(Bancontact::loop, this));
   }
@@ -26,11 +26,14 @@ namespace Banking {
 
       printf("Received message\n");
 
-      auto itr = c_this->m_banks.find(current_message->bank);
-      if (itr != c_this->m_banks.end()) {
+      auto bank = c_this->m_banksList.find(current_message->bank); // check if bank exists in the list
+      if (bank != c_this->m_banksList.end()) {
+
         printf("Bank exists\n");
         // Bank exists
-        rtos::Mail<Banking::BancontactToBankMessage, 5U>* bank_mail = itr->second->connect();
+
+        // Get Bancontact -> Bank bus and alocate all data
+        rtos::Mail<Banking::BancontactToBankMessage, 5U>* bank_mail = bank->second->connect();
 
         auto n_message = bank_mail->try_calloc_for(rtos::Kernel::wait_for_u32_forever);
         
@@ -38,11 +41,13 @@ namespace Banking {
         n_message->to_name = current_message->to_name;
         n_message->to_bank = current_message->to_bank;
         n_message->amount = current_message->amount;
-        n_message->mail = &c_this->m_respons_messages;
 
+        // mail to let bank know where to send response
+        n_message->mail = &c_this->m_respons_messages;
         bank_mail->put(n_message);
 
-        auto response = c_this->m_respons_messages.try_get_for(rtos::Kernel::wait_for_u32_forever);
+        // Get response from bank
+        auto response = c_this->m_respons_messages.try_get_for(rtos::Kernel::wait_for_u32_forever); 
 
         // TODO: message to terminal
         if (response->ok) {
@@ -53,7 +58,7 @@ namespace Banking {
 
         c_this->m_respons_messages.free(response);
 
-        itr->second->disconnect();
+        bank->second->disconnect();
       }
     
       c_this->m_messages.free(current_message);

@@ -25,7 +25,7 @@ namespace Banking {
       static void loop(void* arg);
 
     private:
-      std::unordered_map<std::string, Bank*> m_banks;
+      std::unordered_map<std::string, Bank*> m_banksList;
 
     private:
       rtos::Thread m_thread;
