@@ -27,7 +27,7 @@ namespace Banking {
       Time::get_midnight_mutex()->lock();
       Time::Get().m_is_midnight.wait();
 
-      printf("It is midnight processing now\n");
+      printf("[%s] It is midnight processing now\n", c_this->m_name.c_str());
 
       // TODO: Send data to other banks 
 
