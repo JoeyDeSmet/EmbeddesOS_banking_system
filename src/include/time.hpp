@@ -22,7 +22,10 @@ namespace Banking {
 
     public:
       static uint get_time(void) {
-        return Get().m_time;
+        Get().m_mtx.trylock_for(0xFFFFFFFF);
+        uint current = Get().m_time;
+        Get().m_mtx.unlock();
+        return current;
       }
 
     private:
@@ -35,6 +38,9 @@ namespace Banking {
     private:
       // Time is in seconds
       uint m_time = 0;
+
+    private:
+      rtos::Mutex m_mtx;
       rtos::Thread m_thread;
 
     public:
