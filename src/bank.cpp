@@ -24,7 +24,7 @@ namespace Banking {
       printf("[%s] Transaction %s to %s amount: %i\n", c_this->m_name, message->name, message->to_name, message->amount);
 
       // Create a response struct
-      auto response = message->mail->try_alloc_for(rtos::Kernel::wait_for_u32_forever);
+      auto response = message->mail->try_calloc_for(rtos::Kernel::wait_for_u32_forever);
 
       auto itr = c_this->m_accounts.find(message->name); // Check if account exists
       if (itr != c_this->m_accounts.end()) {

@@ -12,7 +12,6 @@
 #include "./src/include/bank.hpp"
 #include "./src/include/bancontact.hpp"
 
-
 Banking::Bank kbc("KBC", [](void* arg) {
   auto accounts = (std::unordered_map<std::string, int> *) arg;
 
@@ -43,9 +42,9 @@ int main() {
 
     printf("\nCurrent time: %i:%i:%i\n", (current_time / 3600), ((current_time / 60) % 60), (current_time % 60));
   
-    auto m = bancontact0.connect();
+    rtos::Mail<Banking::TerminalToBancontactMessage, 5U>* m = bancontact0.connect();
 
-    auto message = m->try_alloc_for(rtos::Kernel::wait_for_u32_forever);
+    Banking::TerminalToBancontactMessage* message = m->try_calloc_for(rtos::Kernel::wait_for_u32_forever);
     
     message->bank = "KBC";
     message->name = "Joey";

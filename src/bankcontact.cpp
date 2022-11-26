@@ -24,31 +24,34 @@ namespace Banking {
     while (true) {
       auto message = c_this->m_messages.try_get_for(rtos::Kernel::wait_for_u32_forever);
 
-      // auto itr = c_this->m_banks.find(message->bank);
-      // if (itr != c_this->m_banks.end()) {
-      //   // Bank exists
-      //   auto bank_mail = itr->second->connect();
+      printf("Received message\n");
 
-      //   auto n_message = bank_mail->try_alloc_for(rtos::Kernel::wait_for_u32_forever);
-      //   n_message->name = message->name;
-      //   n_message->to_name = message->to_name;
-      //   n_message->to_bank = message->to_bank;
-      //   n_message->amount = message->amount;
-      //   n_message->mail = &c_this->m_respons_messages;
+      auto itr = c_this->m_banks.find(message->bank);
+      if (itr != c_this->m_banks.end()) {
+        printf("Bank exists\n");
+        // Bank exists
+        auto bank_mail = itr->second->connect();
 
-      //   bank_mail->put(n_message);
+        auto n_message = bank_mail->try_calloc_for(rtos::Kernel::wait_for_u32_forever);
+        n_message->name = message->name;
+        n_message->to_name = message->to_name;
+        n_message->to_bank = message->to_bank;
+        n_message->amount = message->amount;
+        n_message->mail = &c_this->m_respons_messages;
 
-      //   auto response = c_this->m_respons_messages.try_get_for(rtos::Kernel::wait_for_u32_forever);
+        bank_mail->put(n_message);
 
-      //   // TODO: message to terminal
-      //   if (response->ok) {
-      //     printf("Success\n");
-      //   } else {
-      //     printf("Fail\n");
-      //   }
+        auto response = c_this->m_respons_messages.try_get_for(rtos::Kernel::wait_for_u32_forever);
 
-      //   itr->second->disconnect();
-      // }
+        // TODO: message to terminal
+        if (response->ok) {
+          printf("Success\n");
+        } else {
+          printf("Fail\n");
+        }
+
+        itr->second->disconnect();
+      }
     
       c_this->m_messages.free(message);
     }
