@@ -1,3 +1,4 @@
+#pragma once
 #define MBED_CONF_RTOS_PRESENT 1
 
 #include "mbed.h"
@@ -5,6 +6,8 @@
 
 #define SECONDS_PER_SECOND 288
 #define SECONDS_IN_DAY 86400
+#define TIME_7_HOUR 25200
+#define TIME_20_HOUR 72000
 
 // Time simulation 
 // To get time in seconds call
@@ -22,10 +25,14 @@ namespace Banking {
 
     public:
       static uint get_time(void) {
-        Get().m_mtx.trylock_for(0xFFFFFFFF);
+        Get().m_time_mtx.trylock_for(rtos::Kernel::wait_for_u32_forever);
         uint current = Get().m_time;
-        Get().m_mtx.unlock();
+        Get().m_time_mtx.unlock();
         return current;
+      }
+
+      static rtos::Mutex* get_midnight_mutex(void) {
+        return &Get().m_midnight_mtx;
       }
 
     private:
@@ -39,9 +46,13 @@ namespace Banking {
       // Time is in seconds
       uint m_time = 0;
 
+    public:
+      rtos::Mutex m_midnight_mtx;
+      rtos::ConditionVariable m_is_midnight;
+
     private:
-      rtos::Mutex m_mtx;
       rtos::Thread m_thread;
+      rtos::Mutex m_time_mtx;
 
     public:
       // Delete copy and assign

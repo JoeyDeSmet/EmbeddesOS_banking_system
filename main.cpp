@@ -7,9 +7,20 @@
 // c_ : context variables
 
 #include "mbed.h"
-#include "./src/include/time.hpp"
+#include "./src/include/bank.hpp"
 
+Banking::Bank kbc("KBC", [](void* arg) {
+  auto accounts = (std::unordered_map<std::string, int> *) arg;
 
+  accounts->insert({ "Joey", 500 });
+  accounts->insert({ "Szymon", 500 });
+});
+
+Banking::Bank belfius("Belfius", [](void* arg) {
+  auto accounts = (std::unordered_map<std::string, int> *) arg;
+
+  accounts->insert({ "Jens", 600 });
+});
 
 int main() {
 
