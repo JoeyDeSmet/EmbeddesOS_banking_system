@@ -106,3 +106,6 @@ cmake_install.cmake
 CMakeFiles/
 cmake_build/
 Testing/
+
+mbed-os
+__pycache__
