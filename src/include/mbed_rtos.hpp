@@ -5,5 +5,6 @@
 #include "rtos.h"
 
 #include "Mail.h"
+#include "Mutex.h"
 #include "Thread.h"
 #include "Semaphore.h"

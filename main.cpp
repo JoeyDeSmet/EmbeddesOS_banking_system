@@ -32,8 +32,8 @@ std::unordered_map<std::string, Banking::Bank*> banks = {
 
 // Create 3 bancontact instances
 Banking::Bancontact bancontact0(banks);
-// Banking::Bancontact bancontact1(banks);
-// Banking::Bancontact bancontact2(banks);
+Banking::Bancontact bancontact1(banks);
+Banking::Bancontact bancontact2(banks);
 
 int main() {
 
