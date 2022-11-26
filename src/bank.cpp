@@ -9,7 +9,7 @@ namespace Banking {
   Bank::~Bank() { }
 
   void Bank::loop(void* arg) {
-    auto c_bank = (Bank *) arg;
+    auto c_this = (Bank *) arg;
 
     while (true) {
 

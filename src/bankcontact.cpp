@@ -10,7 +10,7 @@ namespace Banking {
   Bankcontact::~Bankcontact() { }
 
   void Bankcontact::loop(void* arg) {
-    auto c_bankcontact = (Bankcontact *) arg;
+    auto c_this = (Bankcontact *) arg;
 
     while (true) {
 

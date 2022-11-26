@@ -9,7 +9,7 @@ namespace Banking {
   Terminal::~Terminal() { }
 
   void Terminal::loop(void* arg) {
-    auto c_terminal = (Terminal *) arg;
+    auto c_this = (Terminal *) arg;
 
     while (true) {
 
