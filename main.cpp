@@ -1,6 +1,11 @@
 // Tell intellisense where using mbed rtos for syntax highlighting
 #define MBED_CONF_RTOS_PRESENT 1
 
+// Naming convention:
+// m_ : member variables
+// s_ : static variables
+// c_ : context variables
+
 #include "mbed.h"
 #include "./src/include/time.hpp"
 

@@ -3,16 +3,13 @@
 #include "mbed.h"
 #include "rtos.h"
 
-/** 
- * Bankcontact can only have 2 connetions
- */
 namespace Banking {
 
-  class Bankcontact {
+  class Bank {
 
     public:
-      Bankcontact(void);
-      ~Bankcontact();
+      Bank(void);
+      ~Bank();
 
     private:
       static void loop(void* arg);
