@@ -22,21 +22,22 @@ namespace Banking {
     auto c_this = (Bancontact *) arg;
 
     while (true) {
-      auto message = c_this->m_messages.try_get_for(rtos::Kernel::wait_for_u32_forever);
+      auto current_message = c_this->m_messages.try_get_for(rtos::Kernel::wait_for_u32_forever);
 
       printf("Received message\n");
 
-      auto itr = c_this->m_banks.find(message->bank);
+      auto itr = c_this->m_banks.find(current_message->bank);
       if (itr != c_this->m_banks.end()) {
         printf("Bank exists\n");
         // Bank exists
-        auto bank_mail = itr->second->connect();
+        rtos::Mail<Banking::BancontactToBankMessage, 5U>* bank_mail = itr->second->connect();
 
         auto n_message = bank_mail->try_calloc_for(rtos::Kernel::wait_for_u32_forever);
-        n_message->name = message->name;
-        n_message->to_name = message->to_name;
-        n_message->to_bank = message->to_bank;
-        n_message->amount = message->amount;
+        
+        n_message->name = current_message->name;
+        n_message->to_name = current_message->to_name;
+        n_message->to_bank = current_message->to_bank;
+        n_message->amount = current_message->amount;
         n_message->mail = &c_this->m_respons_messages;
 
         bank_mail->put(n_message);
@@ -50,10 +51,12 @@ namespace Banking {
           printf("Fail\n");
         }
 
+        c_this->m_respons_messages.free(response);
+
         itr->second->disconnect();
       }
     
-      c_this->m_messages.free(message);
+      c_this->m_messages.free(current_message);
     }
   }  
 

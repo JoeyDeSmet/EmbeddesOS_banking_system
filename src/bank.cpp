@@ -21,7 +21,7 @@ namespace Banking {
       // Get current message
       auto message = c_this->m_messages.try_get_for(rtos::Kernel::wait_for_u32_forever);
 
-      printf("[%s] Transaction %s to %s amount: %i\n", c_this->m_name, message->name, message->to_name, message->amount);
+      printf("[%s] Transaction %s to %s amount: %i\n", c_this->m_name.c_str(), message->name.c_str(), message->to_name.c_str(), message->amount);
 
       // Create a response struct
       auto response = message->mail->try_calloc_for(rtos::Kernel::wait_for_u32_forever);
@@ -44,6 +44,8 @@ namespace Banking {
         response->ok = false;
         message->mail->put(response);
       }
+
+      c_this->m_messages.free(message);
     }
   }
 
