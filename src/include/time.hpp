@@ -1,8 +1,7 @@
 #pragma once
 #define MBED_CONF_RTOS_PRESENT 1
 
-#include "mbed.h"
-#include "rtos.h"
+#include "mbed_rtos.hpp"
 
 #define SECONDS_PER_SECOND 288
 #define SECONDS_IN_DAY 86400
