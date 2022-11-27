@@ -23,6 +23,13 @@ namespace Banking {
       }
 
     public:
+      /**
+       * @brief Get the current simulated time
+       * 
+       * This is a threadsafe call
+       * 
+       * @return uint representation of time in seconds
+       */
       static uint get_time(void) {
         Get().m_time_mtx.trylock_for(rtos::Kernel::wait_for_u32_forever);
         uint current = Get().m_time;
@@ -30,6 +37,13 @@ namespace Banking {
         return current;
       }
 
+      /**
+       * @brief Get the midnight mutex object
+       * 
+       * Used to get and than lock mutex of condition variable in order to use condition variable
+       * 
+       * @return rtos::Mutex* 
+       */
       static rtos::Mutex* get_midnight_mutex(void) {
         return &Get().m_midnight_mtx;
       }

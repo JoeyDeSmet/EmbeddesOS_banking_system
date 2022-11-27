@@ -23,25 +23,23 @@ namespace Banking {
 
       printf("[%s] Transaction %s to %s amount: %i\n", c_this->m_name.c_str(), message->name.c_str(), message->to_name.c_str(), message->amount);
 
-      // Create a response struct
+      // Create a response struct and default to false
       auto response = message->mail->try_calloc_for(rtos::Kernel::wait_for_u32_forever);
+      response->ok = false;
 
-      auto account = c_this->m_accounts.find(message->name); // Check if account exists
+
+      // Check if account exists
+      auto account = c_this->m_accounts.find(message->name); 
       if (account != c_this->m_accounts.end()) {
-        // Acount exist
             
-        if (account->second > message->amount) { // Check if enough money
+        // Check if account has enough money
+        if (account->second > message->amount) { 
+          // Remove money from account
           account->second -= message->amount;
 
-          // TODO: Store somwhere and check bank
+          // TODO: Store somwhere and check to which bank to send
           response->ok = true;
-        } else {
-          response->ok = false;
-        }
-
-      } else {
-        // Acount does not exist
-        response->ok = false;
+        } 
       }
 
       message->mail->put(response);
@@ -62,13 +60,15 @@ namespace Banking {
     auto c_this = (Bank *) arg;
 
     while (true) {
-      // Wait for midnight
+      // This thread will wait here for midnight signal
       Time::get_midnight_mutex()->lock();
       Time::Get().m_is_midnight.wait();
 
       printf("[%s] It is midnight processing now\n", c_this->m_name.c_str());
 
-      // TODO: Send data to other banks 
+      // TODO: Send buffered messageds to other banks so that they can process it
+
+      // TODO: Check mail for message from other bank (non-blocking) 
 
       Time::get_midnight_mutex()->unlock();
     }

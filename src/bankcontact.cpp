@@ -10,8 +10,8 @@ namespace Banking {
   Bancontact::~Bancontact() { }
 
   rtos::Mail<TerminalToBancontactMessage, 5>* Bancontact::connect(void) {
-    m_max_connections.acquire();
-    return &m_messages;
+    m_max_connections.acquire(); // Make sure only 2 can connect at 1 time
+    return &m_messages; // Return pointer to mail
   }
 
   void Bancontact::disconnect(void) {
@@ -22,16 +22,14 @@ namespace Banking {
     auto c_this = (Bancontact *) arg;
 
     while (true) {
+      // Wait blocking for a message from terminal
       auto current_message = c_this->m_messages.try_get_for(rtos::Kernel::wait_for_u32_forever);
 
       printf("Received message\n");
 
-      auto bank = c_this->m_banksList.find(current_message->bank); // check if bank exists in the list
+      // check if the bank exists in the list
+      auto bank = c_this->m_banksList.find(current_message->bank); 
       if (bank != c_this->m_banksList.end()) {
-
-        printf("Bank exists\n");
-        // Bank exists
-
         // Get Bancontact -> Bank bus and alocate all data
         rtos::Mail<Banking::BancontactToBankMessage, 5U>* bank_mail = bank->second->connect();
 

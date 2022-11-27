@@ -17,8 +17,21 @@ namespace Banking {
       Bancontact(std::unordered_map<std::string, Bank*> banks);
       ~Bancontact();
 
+    // Connect and disconnect are both used in Bank and Bancontact maby use inheritance to make this more DRY ?
     public:
+      /**
+       * @brief Connect to bancontact instance
+       * Will block when more than 2 client are already connected.
+       * 
+       * @return rtos::Mail<TerminalToBancontactMessage, 5>* 
+       * Where messages to bancontact have to be placed
+       */
       rtos::Mail<TerminalToBancontactMessage, 5>* connect(void);
+      
+      /**
+       * @brief Disconnect
+       * Lets other thread blocking on connect, connect to bancontact
+       */
       void disconnect(void);
 
     private:

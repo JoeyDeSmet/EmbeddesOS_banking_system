@@ -23,7 +23,19 @@ namespace Banking {
       ~Bank();
 
     public:
+      /**
+       * @brief Connect to bank instance
+       * Will block when more than 2 client are already connected.
+       * 
+       * @return rtos::Mail<BancontactToBankMessage, 5>* 
+       * Where messages to bank have to be placed
+       */
       rtos::Mail<BancontactToBankMessage, 5>* connect(void);
+      
+      /**
+       * @brief Disconnect
+       * Lets other thread blocking on connect, connect to bank
+       */
       void disconnect(void);
 
     private:
