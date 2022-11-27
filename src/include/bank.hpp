@@ -22,6 +22,7 @@ namespace Banking {
       Bank(std::string name, void (*add_users)(void* arg));
       ~Bank();
 
+    // Connect and disconnect are both used in Bank and Bancontact maby use inheritance to make this more DRY ?
     public:
       /**
        * @brief Connect to bank instance
