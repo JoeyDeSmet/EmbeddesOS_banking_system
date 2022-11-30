@@ -12,6 +12,15 @@ namespace Banking {
     auto c_this = (Terminal *) arg;
 
     while (true) {
+      
+      //Get bankcotact mail
+
+      // Create message 
+      // Create account object
+
+      // Send in mail
+
+      // print response
 
     }
   }

@@ -32,7 +32,8 @@ namespace Banking {
       if (bank != c_this->m_banksList.end()) {
         // Get Bancontact -> Bank bus and alocate all data
         rtos::Mail<Banking::BancontactToBankMessage, 5U>* bank_mail = bank->second->connect();
-
+        
+        // Change it to accout object
         auto n_message = bank_mail->try_calloc_for(rtos::Kernel::wait_for_u32_forever);
         
         n_message->name = current_message->name;
