@@ -11,8 +11,12 @@ namespace Banking{
       void add(double money);
       void sub(double money);
 
+      const char* name(void);
+      
     private:
-      double money = 0;
+      double _money = 0;
+      const char* _name;
+      const char* _bank;
 
   };
 }
