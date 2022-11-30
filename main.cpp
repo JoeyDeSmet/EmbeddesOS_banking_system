@@ -11,6 +11,7 @@
 
 #include "./src/include/bank.hpp"
 #include "./src/include/bancontact.hpp"
+#include "./src/include/terminal.hpp"
 
 Banking::Bank kbc("KBC", [](void* arg) {
   auto accounts = (std::unordered_map<std::string, int> *) arg;
@@ -34,6 +35,18 @@ std::unordered_map<std::string, Banking::Bank*> banks = {
 Banking::Bancontact bancontact0(banks);
 Banking::Bancontact bancontact1(banks);
 Banking::Bancontact bancontact2(banks);
+
+// 3 terminals / server
+std::vector<Banking::Bancontact*> bancontacts {
+  &bancontact0,
+  &bancontact1,
+  &bancontact2
+};
+
+Banking::Terminal terminal1(bancontacts);
+Banking::Terminal terminal2(bancontacts);
+Banking::Terminal terminal3(bancontacts);
+
 
 int main() {
 
