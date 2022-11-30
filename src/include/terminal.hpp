@@ -2,6 +2,7 @@
 #define MBED_CONF_RTOS_PRESENT 1
 
 #include "mbed_rtos.hpp"
+#include "messages.hpp"
 
 namespace Banking {
 
@@ -17,6 +18,8 @@ namespace Banking {
     private:
       rtos::Thread m_thread;
 
+    private:
+      rtos::Mail<BancontactToTerminalMessage, 1> m_respons_messages;
   };
 
 }

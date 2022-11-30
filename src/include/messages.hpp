@@ -8,7 +8,7 @@ namespace Banking {
     bool ok; // Indication if transation was succesfull
   };
 
-  typedef struct BankToBancontactMessage BancontactToTerminalMessage;
+  typedef struct BankToBancontactMessage;
 
   struct BankToBankMessage {
     std::string bank; // Name of the bank
@@ -24,6 +24,12 @@ namespace Banking {
     rtos::Mail<BankToBancontactMessage, 1>* mail; // Pointer to mail
   };
 
+  struct BancontactToTerminalMessage {
+
+    bool ok; // Response to terminal
+
+  }; 
+
   struct TerminalToBancontactMessage {
     std::string name;
     std::string bank;
@@ -32,6 +38,10 @@ namespace Banking {
     std::string to_bank;
 
     uint amount;
+
+    rtos::Mail<BancontactToTerminalMessage, 1> *mailToTerminal;
   };
+
+
   
 }
