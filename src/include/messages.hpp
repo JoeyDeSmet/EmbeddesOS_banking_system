@@ -1,6 +1,7 @@
 #pragma once
 
 #include "mbed_rtos.hpp"
+#include "account.hpp"
 
 namespace Banking {
 
@@ -42,6 +43,12 @@ namespace Banking {
     rtos::Mail<BancontactToTerminalMessage, 1> *mailToTerminal;
   };
 
+  struct ToTerminalMessage{
+
+    Account* from;
+    Account* to;
+    uint amount;
+  };
 
   
 }
