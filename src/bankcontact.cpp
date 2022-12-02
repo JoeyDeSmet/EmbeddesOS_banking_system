@@ -48,17 +48,17 @@ namespace Banking {
         // Get response from bank
         auto bankResponse = c_this->m_respons_messages.try_get_for(rtos::Kernel::wait_for_u32_forever);
         // send response to terminal
-        // auto terminalResponse = current_message->mailToTerminal->try_alloc_for(rtos::Kernel::wait_for_u32_forever);
+        auto terminalResponse = current_message->mailToTerminal->try_alloc_for(rtos::Kernel::wait_for_u32_forever);
 
         if (bankResponse->ok) {
-          // terminalResponse->ok = true;
+          terminalResponse->ok = true;
           printf("Success\n");
         } else {
-          // terminalResponse->ok = false;
+          terminalResponse->ok = false;
           printf("Fail\n");
         }
 
-        // current_message->mailToTerminal->put(terminalResponse);
+        current_message->mailToTerminal->put(terminalResponse);
         c_this->m_respons_messages.free(bankResponse);
 
         bank->second->disconnect();

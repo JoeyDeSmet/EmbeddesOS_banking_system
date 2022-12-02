@@ -59,22 +59,21 @@ int main() {
 
     printf("\nCurrent time: %i:%i:%i\n", (current_time / 3600), ((current_time / 60) % 60), (current_time % 60));
 
-    printf("\nBEFORE CONNECTED TO TERMINAL\n\n");
-    rtos::Mail<Banking::TerminalToBancontactMessage, 5U> *m = terminal1.connect();
-    printf("\nCONNECTED TO TERMINAL\n\n");
+    auto *m = terminal1.connect();
+    
     // rtos::Mail<Banking::TerminalToBancontactMessage, 5U>* m = bancontact0.connect();
 
     auto message = m->try_calloc_for(rtos::Kernel::wait_for_u32_forever);
-    // Banking::TerminalToBancontactMessage* message = m->try_calloc_for(rtos::Kernel::wait_for_u32_forever);
+    // // Banking::TerminalToBancontactMessage* message = m->try_calloc_for(rtos::Kernel::wait_for_u32_forever);
 
     message->bank = "KBC";
     message->name = "Joey";
     message->to_bank = "KBC";
     message->to_name = "Szymon";
     message->amount = 50;
-    // printf("\n SENDING TO TERMINAL\n\n");
+
     m->put(message);
-    // printf("\n MSG IN TERMINAL\n\n");
+    
 
     // bancontact0.disconnect();
     terminal1.disconnect();

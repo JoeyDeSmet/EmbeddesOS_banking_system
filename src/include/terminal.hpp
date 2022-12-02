@@ -19,7 +19,7 @@ namespace Banking {
       Terminal(std::vector<Bancontact*> list);
       ~Terminal();
 
-      rtos::Mail<TerminalToBancontactMessage, 5>* connect(void);
+      rtos::Mail<TerminalToBancontactMessage, 1>* connect(void);
       void disconnect(void);  
     private:
       static void loop(void* arg);
@@ -32,7 +32,7 @@ namespace Banking {
 
     private:
       rtos::Semaphore m_max_connections;
-      rtos::Mail<TerminalToBancontactMessage, 5> _accountInfo;
+      rtos::Mail<TerminalToBancontactMessage, 1> _accountInfoMail;
       rtos::Mail<BancontactToTerminalMessage, 1> m_respons_messages;
   };
 
