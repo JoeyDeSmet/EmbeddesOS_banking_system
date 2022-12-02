@@ -12,6 +12,7 @@
 #include "./src/include/bank.hpp"
 #include "./src/include/bancontact.hpp"
 #include "./src/include/terminal.hpp"
+#include "./src/include/account.hpp"
 
 Banking::Bank kbc("KBC", [](void* arg) {
   auto accounts = (std::unordered_map<std::string, int> *) arg;
@@ -44,30 +45,39 @@ std::vector<Banking::Bancontact*> bancontacts {
 };
 
 Banking::Terminal terminal1(bancontacts);
-Banking::Terminal terminal2(bancontacts);
-Banking::Terminal terminal3(bancontacts);
+// Banking::Terminal terminal2(bancontacts);
+// Banking::Terminal terminal3(bancontacts);
 
 
 int main() {
+
+  // Banking::Account Szymon("Szymon", "KBC", 500);
+  // Banking::Account Joey("Joey", "KBC", 500);
 
   while (true) {
     uint current_time = Banking::Time::get_time();
 
     printf("\nCurrent time: %i:%i:%i\n", (current_time / 3600), ((current_time / 60) % 60), (current_time % 60));
-  
-    rtos::Mail<Banking::TerminalToBancontactMessage, 5U>* m = bancontact0.connect();
 
-    Banking::TerminalToBancontactMessage* message = m->try_calloc_for(rtos::Kernel::wait_for_u32_forever);
-    
+    printf("\nBEFORE CONNECTED TO TERMINAL\n\n");
+    rtos::Mail<Banking::TerminalToBancontactMessage, 5U> *m = terminal1.connect();
+    printf("\nCONNECTED TO TERMINAL\n\n");
+    // rtos::Mail<Banking::TerminalToBancontactMessage, 5U>* m = bancontact0.connect();
+
+    auto message = m->try_calloc_for(rtos::Kernel::wait_for_u32_forever);
+    // Banking::TerminalToBancontactMessage* message = m->try_calloc_for(rtos::Kernel::wait_for_u32_forever);
+
     message->bank = "KBC";
     message->name = "Joey";
     message->to_bank = "KBC";
     message->to_name = "Szymon";
     message->amount = 50;
-
+    // printf("\n SENDING TO TERMINAL\n\n");
     m->put(message);
+    // printf("\n MSG IN TERMINAL\n\n");
 
-    bancontact0.disconnect();
+    // bancontact0.disconnect();
+    terminal1.disconnect();
 
     ThisThread::sleep_for(std::chrono::milliseconds(1000));
   }
