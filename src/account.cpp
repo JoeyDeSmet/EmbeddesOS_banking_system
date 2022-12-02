@@ -3,13 +3,20 @@
 
 namespace Banking{
 
-
-  Account::Account(const char* name, const char* bank){
+  Account::Account(std::string name, std::string bank){
     _name = name;
     _bank = bank;
   }
 
-  Account::Account(const char* name, const char* bank, double money){
+  /**
+   * @brief Account object > change for usage in mail insted of 
+   * BancontactToBankMessage and TerminalToBancontactMessage
+   * 
+   * @param name 
+   * @param bank 
+   * @param money
+   */
+  Account::Account(std::string name, std::string bank, double money){
     _name = name;
     _bank = bank;
     _money = money;
@@ -22,4 +29,8 @@ namespace Banking{
   void Account::sub(double amount){
     _money -= amount;
   }
+
+  std::string Account::name(void) { return _name; }
+  std::string Account::bank(void) { return _bank; }
+  uint Account::money(void) { return _money; }
 }
