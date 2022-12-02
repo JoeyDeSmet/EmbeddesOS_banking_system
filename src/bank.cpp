@@ -9,7 +9,7 @@ namespace Banking {
     add_users((void*) &m_accounts);
 
     m_thread.start(callback(Bank::loop, this));
-    m_process_thread.start(callback(Bank::processes, this));
+    // m_process_thread.start(callback(Bank::processes, this));
   }
 
   Bank::~Bank() { }
