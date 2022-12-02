@@ -1,22 +1,26 @@
+#pragma once
 
+#include <iostream>
 
 namespace Banking{
 
   class Account{
 
     public:
-      Account(const char* name, const char* bank);
-      Account(const char* name, const char* bank, double money);
+      Account(std::string name, std::string bank);
+      Account(std::string name, std::string bank, double money);
       
       void add(double money);
       void sub(double money);
 
-      const char* name(void);
-      
+      std::string name(void);
+      std::string bank(void);
+      uint money(void);
+
     private:
       double _money = 0;
-      const char* _name;
-      const char* _bank;
+      std::string _name;
+      std::string _bank;
 
   };
 }
