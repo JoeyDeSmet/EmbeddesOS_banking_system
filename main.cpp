@@ -57,25 +57,32 @@ int main() {
   while (true) {
     uint current_time = Banking::Time::get_time();
 
-    printf("\nCurrent time: %i:%i:%i\n", (current_time / 3600), ((current_time / 60) % 60), (current_time % 60));
+    printf("\n\nCurrent time: %i:%i:%i\n", (current_time / 3600), ((current_time / 60) % 60), (current_time % 60));
 
-    auto *m = terminal1.connect();
-    
-    // rtos::Mail<Banking::TerminalToBancontactMessage, 5U>* m = bancontact0.connect();
+    // auto *m = terminal1.connect();
+    // auto message = m->try_calloc_for(rtos::Kernel::wait_for_u32_forever);
 
-    auto message = m->try_calloc_for(rtos::Kernel::wait_for_u32_forever);
-    // // Banking::TerminalToBancontactMessage* message = m->try_calloc_for(rtos::Kernel::wait_for_u32_forever);
+    // message->bank = "KBC";
+    // message->name = "Joey";
+    // message->to_bank = "KBC";
+    // message->to_name = "Szymon";
+    // message->amount = 50;
 
-    message->bank = "KBC";
-    message->name = "Joey";
-    message->to_bank = "KBC";
-    message->to_name = "Szymon";
-    message->amount = 50;
+    // m->put(message);
 
-    m->put(message);
-    
+    // terminal1.disconnect();
 
-    // bancontact0.disconnect();
+    auto nightConnection = terminal1.connect();
+    auto nightMsg = nightConnection->try_calloc_for(rtos::Kernel::wait_for_u32_forever);
+
+    nightMsg->bank = "KBC";
+    nightMsg->name = "Joey";
+    nightMsg->to_bank = "Belfius";
+    nightMsg->to_name = "Jens";
+    nightMsg->amount = 50;
+
+    nightConnection->put(nightMsg);
+
     terminal1.disconnect();
 
     ThisThread::sleep_for(std::chrono::milliseconds(1000));

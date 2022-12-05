@@ -2,7 +2,7 @@
 #define MBED_CONF_RTOS_PRESENT 1
 
 #include "mbed_rtos.hpp"
-
+#include <vector>
 #include <unordered_map>
 
 #include "time.hpp"
@@ -58,6 +58,7 @@ namespace Banking {
     private:
       // map with name of account and amount of money
       std::unordered_map<std::string, int> m_accounts;
+      std::vector<BankToBankMessage> m_nightProcess;
 
   };
 

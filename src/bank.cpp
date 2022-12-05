@@ -37,7 +37,21 @@ namespace Banking {
           // Remove money from account
           account->second -= message->amount;
 
-          // TODO: Store somwhere and check to which bank to send
+          if(message->to_bank == c_this->m_name){
+            // If in the same bank add to money to user
+            auto accountToPay = c_this->m_accounts.find(message->to_name);
+            accountToPay->second += message->amount;
+          }
+          else{
+            // add to list that will be processed on midnight
+            BankToBankMessage nightListMsg;
+            nightListMsg.amount = message->amount;
+            nightListMsg.bank = message->to_bank;
+            nightListMsg.name = message->to_name;
+
+            c_this->m_nightProcess.push_back(nightListMsg);
+          }
+
           response->ok = true;
         } 
       }
@@ -62,13 +76,39 @@ namespace Banking {
     while (true) {
       // This thread will wait here for midnight signal
       Time::get_midnight_mutex()->lock();
-      Time::Get().m_is_midnight.wait();
 
+      Time::Get().m_is_midnight.wait();
+      
       printf("[%s] It is midnight processing now\n", c_this->m_name.c_str());
 
-      // TODO: Send buffered messageds to other banks so that they can process it
+      // Check mail for message from other bank (non-blocking) 
+      auto getMessage = bank_to_bank_mail.try_get();
+      if(getMessage != nullptr) { 
+        if(getMessage->bank == c_this->m_name){
+        
+          auto user = c_this->m_accounts.find(getMessage->name);
+          user->second += getMessage->amount;
 
-      // TODO: Check mail for message from other bank (non-blocking) 
+          printf("[%s] Processed night payment to [%s] %s\n",c_this->m_name.c_str(), getMessage->bank.c_str(), getMessage->name.c_str());
+          
+          bank_to_bank_mail.free(getMessage);
+        }
+      }
+      
+      // Send buffered messageds to other banks so that they can process it
+      if(c_this->m_nightProcess.size() != 0){
+        
+        // change it to single value insted of loop?
+        for(int i = c_this->m_nightProcess.size() - 1; i >= 0; i--){
+          auto message = bank_to_bank_mail.try_calloc_for(rtos::Kernel::wait_for_u32_forever);
+          message->amount = c_this->m_nightProcess[i].amount;
+          message->bank = c_this->m_nightProcess[i].bank;
+          message->name = c_this->m_nightProcess[i].name;
+
+          bank_to_bank_mail.put(message);
+          c_this->m_nightProcess.pop_back();
+        }
+      }
 
       Time::get_midnight_mutex()->unlock();
     }
