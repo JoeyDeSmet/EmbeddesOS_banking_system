@@ -25,8 +25,6 @@ namespace Banking {
       // Wait blocking for a message from terminal
       auto current_message = c_this->m_messages.try_get_for(rtos::Kernel::wait_for_u32_forever);
 
-      printf("Received message\n");
-
       // check if the bank exists in the list
       auto bank = c_this->m_banksList.find(current_message->bank); 
       if (bank != c_this->m_banksList.end()) {
@@ -52,10 +50,8 @@ namespace Banking {
 
         if (bankResponse->ok) {
           terminalResponse->ok = true;
-          printf("Success\n");
         } else {
           terminalResponse->ok = false;
-          printf("Fail\n");
         }
 
         current_message->mailToTerminal->put(terminalResponse);
