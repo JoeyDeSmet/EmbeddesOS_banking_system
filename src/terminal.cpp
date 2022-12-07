@@ -2,7 +2,7 @@
 
 namespace Banking {
 
-  Terminal::Terminal(std::vector<Bancontact*> list) : _bancontacts(list), m_max_connections(1)
+  Terminal::Terminal(Bancontact* bancontact) : _bancontact(bancontact), m_max_connections(1)
   {
     m_thread.start(callback(Terminal::loop, this));
   }
@@ -21,29 +21,13 @@ namespace Banking {
   void Terminal::loop(void* arg) {
     auto c_this = (Terminal *) arg;
 
-    
-
     while (true) {
       
       // get account data
       auto accountInfo = c_this->_accountInfoMail.try_get_for(rtos::Kernel::wait_for_u32_forever);
-      
-      rtos::Mail<Banking::TerminalToBancontactMessage, 5> *bancontactMail = nullptr;
-      Banking::Bancontact * banConnection = nullptr;
-      // connect to 1 of 3 bancontacten
-      // while(bancontactMail == nullptr){
-      //   for(int i = 0; i < 3; i++){
-      //     bancontactMail = c_this->_bancontacts[i]->connect();
-          
-      //     if(bancontactMail != nullptr){
-      //       banConnection = c_this->_bancontacts[i];
-      //       break;
-      //     }
-      //   }
-      // }
 
-      bancontactMail = c_this->_bancontacts[0]->connect();
       //Get bankcotact mail
+      auto bancontactMail = c_this->_bancontact->connect();
       auto msg = bancontactMail->try_calloc_for(rtos::Kernel::wait_for_u32_forever);
 
       // Create message 
@@ -75,8 +59,8 @@ namespace Banking {
       }
 
       c_this->m_respons_messages.free(response);
-      c_this->_bancontacts[0]->disconnect();
-      c_this->_accountInfoMail.free(accountInfo); // choose better name x)
+      c_this->_bancontact->disconnect();
+      c_this->_accountInfoMail.free(accountInfo);
     }
   }
 

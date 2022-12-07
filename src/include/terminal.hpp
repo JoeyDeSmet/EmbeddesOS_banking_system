@@ -16,7 +16,7 @@ namespace Banking {
   class Terminal {
 
     public:
-      Terminal(std::vector<Bancontact*> list);
+      Terminal(Bancontact* bancontact);
       ~Terminal();
 
       rtos::Mail<TerminalToBancontactMessage, 1>* connect(void);
@@ -28,7 +28,7 @@ namespace Banking {
       rtos::Thread m_thread;
 
     private:
-      std::vector<Bancontact*> _bancontacts;
+      Bancontact* _bancontact;
 
     private:
       rtos::Semaphore m_max_connections;
