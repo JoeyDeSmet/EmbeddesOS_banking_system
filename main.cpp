@@ -14,6 +14,21 @@
 #include "./src/include/terminal.hpp"
 #include "./src/include/account.hpp"
 #include "./src/include/messages.hpp"
+#include "Mail.h"
+
+#include "mbed_mem_trace.h"
+
+void print_memory_info() {
+  while(1){
+   
+    // Grab the heap statistics
+    mbed_stats_heap_t heap_stats;
+    mbed_stats_heap_get(&heap_stats);
+     printf("Heap size: %lu / %lu bytes\r\n", heap_stats.current_size, heap_stats.reserved_size);
+     ThisThread::sleep_for(1000);
+  }
+  
+}
 
 void pay(std::string name, std::string bank_name, std::string to_name, std::string to_bank_name, double amount);
 
@@ -73,45 +88,49 @@ std::vector<Banking::Terminal*> terminalVector {
 };
 
 
+Thread stats;
 int main() {
-
+  stats.start(print_memory_info);
   // Banking::Account Szymon("Szymon", "KBC", 500);
   // Banking::Account Joey("Joey", "KBC", 500);
 
+  uint current_time;
   while (true) {
-    uint current_time = Banking::Time::get_time();
-
+    current_time = Banking::Time::get_time();
     printf("\n\nCurrent time: %i:%i:%i\n", (current_time / 3600), ((current_time / 60) % 60), (current_time % 60));
 
     pay("Joey", "KBC", "Szymon", "KBC", 50);
-    pay("Joey", "KBC", "Jens", "Belfius", 50);
-    pay("Jens", "Belfius","Szymon", "KBC", 50);
-    
+
+    // pay("Jens", "Belfius","Szymon", "KBC", 50);
+    // pay("Joey", "KBC", "Jens", "Belfius", 50);
+    // pay("Szymon", "KBC", "Joey", "KBC", 50);
+    // print_memory_info();
     ThisThread::sleep_for(std::chrono::milliseconds(1000));
   }
 }
 
 void pay(std::string name, std::string bank_name, std::string to_name, std::string to_bank_name, double amount){
-  rtos::Mail<Banking::TerminalToBancontactMessage, 1>* connection = nullptr;
-  Banking::Terminal * currentTerminal = nullptr;
-  for(int i = 0; i < 9; i++){
-    connection = terminalVector[i]->connect();
-    currentTerminal = terminalVector[i];
-    if(connection != nullptr) break;
-  }
+  // rtos::Mail<Banking::TerminalToBancontactMessage, 1>* connection = nullptr;
+  // Banking::Terminal * currentTerminal = nullptr;
+  // for(int i = 0; i < 9; i++){
+  //   connection = terminalVector[i]->connect();
+  //   currentTerminal = terminalVector[i];
+  //   if(connection != nullptr) break;
+  // }
+  auto connection = terminal1.connect();
+  // auto message = connection->try_alloc_for(Kernel::wait_for_u32_forever);
 
-  auto message = connection->try_calloc_for(rtos::Kernel::wait_for_u32_forever);
+  // message->name = name;
+  // message->bank = bank_name;
 
-  message->name = name;
-  message->bank = bank_name;
+  // message->to_name = to_name;
+  // message->to_bank = to_bank_name;
 
-  message->to_name = to_name;
-  message->to_bank = to_bank_name;
+  // message->amount = amount;
 
-  message->amount = amount;
-
-  connection->put(message);
-
-  currentTerminal->disconnect();
+  // connection->put(message);
+  // auto msg = connection->try_get_for(rtos::Kernel::wait_for_u32_forever);
+  // connection->free(msg);
+  terminal1.disconnect();
 
 }

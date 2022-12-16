@@ -22,45 +22,47 @@ namespace Banking {
     auto c_this = (Terminal *) arg;
 
     while (true) {
+      // // printf("[Terminal]%x\n", c_this->m_thread.get_id());
+      // // get account data
+      // auto accountInfo = c_this->_accountInfoMail.try_get_for(rtos::Kernel::wait_for_u32_forever);
+ 
+      // //Get bankcotact mail
+      // auto bancontactMail = c_this->_bancontact->connect();
+      // auto msg = bancontactMail->try_calloc_for(rtos::Kernel::wait_for_u32_forever);
       
-      // get account data
-      auto accountInfo = c_this->_accountInfoMail.try_get_for(rtos::Kernel::wait_for_u32_forever);
 
-      //Get bankcotact mail
-      auto bancontactMail = c_this->_bancontact->connect();
-      auto msg = bancontactMail->try_calloc_for(rtos::Kernel::wait_for_u32_forever);
+      // // Create message 
+      // msg->name = accountInfo->name;
+      // msg->bank = accountInfo->bank;
+      // msg->to_name = accountInfo->to_name;
+      // msg->to_bank = accountInfo->to_bank;
+      // msg->mailToTerminal = &c_this->m_respons_messages;
 
-      // Create message 
-      msg->name = accountInfo->name;
-      msg->bank = accountInfo->bank;
-      msg->to_name = accountInfo->to_name;
-      msg->to_bank = accountInfo->to_bank;
-      msg->mailToTerminal = &c_this->m_respons_messages;
+      // // Account object
+      // // msg->name = accountInfo->from->name();
+      // // msg->bank = accountInfo->from->bank();
+      // // msg->to_name = accountInfo->to->name();
+      // // msg->to_bank = accountInfo->to->bank();
 
-      // Account object
-      // msg->name = accountInfo->from->name();
-      // msg->bank = accountInfo->from->bank();
-      // msg->to_name = accountInfo->to->name();
-      // msg->to_bank = accountInfo->to->bank();
+      // msg->amount = accountInfo->amount;
 
-      msg->amount = accountInfo->amount;
-
-      // Send in mail
-      bancontactMail->put(msg);
+      // // Send in mail
+      // bancontactMail->put(msg);
       
-      // print response
-      auto response = c_this->m_respons_messages.try_get_for(rtos::Kernel::wait_for_u32_forever);
+      // // print response
+      // auto response = c_this->m_respons_messages.try_get_for(rtos::Kernel::wait_for_u32_forever);
 
-      if(response->ok){
-        printf("[Terminal] Process Succeed\n");
-      }
-      else{
-        printf("[Terminal] Process didn't Succeed\n");
-      }
+      // if(response->ok){
+      //    //printf("[Terminal] Process Succeed\n");
+      // }
+      // else{
+      //    //printf("[Terminal] Process didn't Succeed\n");
+      // }
 
-      c_this->m_respons_messages.free(response);
-      c_this->_bancontact->disconnect();
-      c_this->_accountInfoMail.free(accountInfo);
+      // c_this->m_respons_messages.free(response);
+      
+      // c_this->_accountInfoMail.free(accountInfo);
+      // c_this->_bancontact->disconnect();
     }
   }
 

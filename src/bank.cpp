@@ -18,50 +18,51 @@ namespace Banking {
     auto c_this = (Bank *) arg;
 
     while (true) {
+            // printf("[bank]%x\n", c_this->m_thread.get_id());
       // Get current message
       auto message = c_this->m_messages.try_get_for(rtos::Kernel::wait_for_u32_forever);
 
-      printf("[%s] Transaction %s to %s amount: %i\n", c_this->m_name.c_str(), message->name.c_str(), message->to_name.c_str(), message->amount);
+       //printf("[%s] Transaction %s to %s amount: %i\n", c_this->m_name.c_str(), message->name.c_str(), message->to_name.c_str(), message->amount);
 
       // Create a response struct and default to false
       auto response = message->mail->try_calloc_for(rtos::Kernel::wait_for_u32_forever);
       response->ok = false;
 
 
-      // Check if account exists
-      auto account = c_this->m_accounts.find(message->name); 
-      if (account != c_this->m_accounts.end()) {
+      // // Check if account exists
+      // auto account = c_this->m_accounts.find(message->name); 
+      // if (account != c_this->m_accounts.end()) {
             
-        // Check if account has enough money
-        if (account->second > message->amount) { 
-          // Remove money from account
-          account->second -= message->amount;
+      //   // Check if account has enough money
+      //   if (account->second > message->amount) { 
+      //     // Remove money from account
+      //     account->second -= message->amount;
 
-          if(message->to_bank == c_this->m_name){
-            // If in the same bank add to money to user
-            auto accountToPay = c_this->m_accounts.find(message->to_name);
-            accountToPay->second += message->amount;
-          }
-          else{
-            // add to list that will be processed on midnight
-            BankToBankMessage nightListMsg;
-            nightListMsg.amount = message->amount;
-            nightListMsg.bank = message->to_bank;
-            nightListMsg.name = message->to_name;
+      //     if(message->to_bank == c_this->m_name){
+      //       // If in the same bank add to money to user
+      //       auto accountToPay = c_this->m_accounts.find(message->to_name);
+      //       accountToPay->second += message->amount;
+      //     }
+      //     else{
+      //       // add to list that will be processed on midnight
+      //       BankToBankMessage nightListMsg;
+      //       nightListMsg.amount = message->amount;
+      //       nightListMsg.bank = message->to_bank;
+      //       nightListMsg.name = message->to_name;
 
-            c_this->m_nightProcess.push_back(nightListMsg);
-          }
+      //       c_this->m_nightProcess.push_back(nightListMsg);
+      //     }
 
-          response->ok = true;
-        } 
-      }
+          // response->ok = true;
+        // } 
+      // }
 
       message->mail->put(response);
       c_this->m_messages.free(message);
     }
   }
 
-  rtos::Mail<BancontactToBankMessage, 5>* Bank::connect(void) {
+  rtos::Mail<BancontactToBankMessage, 2>* Bank::connect(void) {
     m_max_connections.acquire(); // Make sure only 2 can connect at 1 time
     return &m_messages; // Return pointer to mail
   }
@@ -79,7 +80,7 @@ namespace Banking {
 
       Time::Get().m_is_midnight.wait();
       
-      printf("[%s] It is midnight processing now\n", c_this->m_name.c_str());
+       //printf("[%s] It is midnight processing now\n", c_this->m_name.c_str());
 
       // Check mail for message from other bank (non-blocking) 
       auto getMessage = bank_to_bank_mail.try_get();
@@ -89,7 +90,7 @@ namespace Banking {
           auto user = c_this->m_accounts.find(getMessage->name);
           user->second += getMessage->amount;
 
-          printf("[%s] Processed night payment to [%s] %s\n",c_this->m_name.c_str(), getMessage->bank.c_str(), getMessage->name.c_str());
+           //printf("[%s] Processed night payment to [%s] %s\n",c_this->m_name.c_str(), getMessage->bank.c_str(), getMessage->name.c_str());
           
           bank_to_bank_mail.free(getMessage);
         }

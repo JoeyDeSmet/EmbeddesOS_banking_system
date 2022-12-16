@@ -31,7 +31,7 @@ namespace Banking {
        * @return rtos::Mail<BancontactToBankMessage, 5>* 
        * Where messages to bank have to be placed
        */
-      rtos::Mail<BancontactToBankMessage, 5>* connect(void);
+      rtos::Mail<BancontactToBankMessage, 2>* connect(void);
       
       /**
        * @brief Disconnect
@@ -53,7 +53,7 @@ namespace Banking {
     private:
       rtos::Semaphore m_max_connections;
       // Mail where Bancontact communicates with bank
-      rtos::Mail<BancontactToBankMessage, 5> m_messages;
+      rtos::Mail<BancontactToBankMessage, 2> m_messages;
 
     private:
       // map with name of account and amount of money

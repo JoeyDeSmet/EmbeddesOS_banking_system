@@ -26,7 +26,7 @@ namespace Banking {
        * @return rtos::Mail<TerminalToBancontactMessage, 5>* 
        * Where messages to bancontact have to be placed
        */
-      rtos::Mail<TerminalToBancontactMessage, 5>* connect(void);
+      rtos::Mail<TerminalToBancontactMessage, 2>* connect(void);
       
       /**
        * @brief Disconnect
@@ -45,7 +45,7 @@ namespace Banking {
       rtos::Semaphore m_max_connections;
 
     private:
-      rtos::Mail<TerminalToBancontactMessage, 5> m_messages;
+      rtos::Mail<TerminalToBancontactMessage, 2> m_messages;
       rtos::Mail<BankToBancontactMessage, 1> m_respons_messages;
 
   };
